@@ -1,6 +1,6 @@
 @font-face {
   font-family: "Digital 7";
-  src: url("Digital7.ttf") format("truetype");
+  src: url("https://github.com/ASaiyan0/basic-calculator/blob/master/Digital7.ttf") format("truetype");
 }
 
 body {
@@ -24,6 +24,7 @@ body {
   top: 35px;
   margin: 0 auto;
   border-radius: 15px;
+  padding-right: 20px;
 }
 
 .numDisplay {
