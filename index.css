@@ -36,6 +36,7 @@ body {
   position: relative;
   font-size: 100px;
   text-align: right;
+  overflow: hidden;
 }
 
 .logoType {
@@ -89,7 +90,7 @@ body {
   border-radius: 15px;
 }
 
-.lButton {
+.eButton {
   background-color: #ed302e;
   color: #ffffff;
   font-family: "Verdana", "Arial", sans-serif;
