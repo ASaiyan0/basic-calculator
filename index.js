@@ -87,9 +87,7 @@ window.addEventListener("load", () => {
         numDisplay.textContent = currentString;
         clearCheck();
       } else {
-        //Else, we will continue to add digits to the currentString, but NOT to the actual display (out of room)
-        currentString = currentString + numButtons[n].textContent;
-        clearCheck();
+        return;
       }
     });
   }
