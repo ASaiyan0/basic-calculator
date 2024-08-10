@@ -4,19 +4,18 @@ window.addEventListener("load", () => {
   const eqButton = document.querySelector(".eButton");
   const numDisplay = document.querySelector(".numDisplay");
   const opArray = ["add", "subtract", "multiply", "divide"];
-  let currentString = "";
   //This should always have STRING data. numDisplay, despite the name, should also always have STRING data.
+  let currentString = "";
+  //This should always have NUMBER data, OR a BLANK STRING.
   let firstNum = "";
-  //This should always have NUMBER data, OR a BLANK STRING (bad practice - figure out a better solution later).
+  //This is STRING.
   let currentOp = "";
   //This is STRING.
   let clearState = "ac";
-  //This is STRING.
-  let errLock = false;
   //This is BOOLEAN.
+  let errLock = false;
 
   function clearCheck() {
-    //There's gotta be a more elegant way of doing this, right?
     if (currentString != "") {
       clearState = "c";
       opButtons[5].textContent = clearState;
@@ -96,9 +95,9 @@ window.addEventListener("load", () => {
         numDisplay.textContent = currentString;
         clearCheck();
       } else {
+        //Else, we will continue to add digits to the currentString, but NOT to the actual display (out of room)
         currentString = currentString + numButtons[n].textContent;
         clearCheck();
-        //Else, we will continue to add digits to the currentString, but NOT to the actual display (out of room)
       }
     });
   }
