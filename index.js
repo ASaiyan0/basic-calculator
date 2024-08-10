@@ -30,8 +30,8 @@ window.addEventListener("load", () => {
     if (Math.abs(num) > 999999999 || Math.abs(num) < 0.00000001) {
       return num.toExponential(5);
     } else {
+    //Following line reads as follows: "Subtract the number of digits to the left of the decimal point from 10"
       let n = 10 - num.toString().split(".")[0].match(/\d/g).length;
-      //line 16 reads as follows: "Subtract the number of digits to the left of the decimal point from 10"
       return parseFloat(num.toFixed(n)).toString();
     }
   }
