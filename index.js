@@ -158,7 +158,7 @@ window.addEventListener("load", () => {
       return;
     } else if (
       Number(currentString) < 0 ||
-      (currentString == "" && firstNum < 0)
+      (currentString == "" && firstNum != "" && firstNum < 0)
     ) {
       numDisplay.textContent = "Error";
       firstNum = "";
