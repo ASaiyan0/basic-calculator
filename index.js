@@ -76,16 +76,8 @@ window.addEventListener("load", () => {
 
   for (let n = 0; n <= 9; n++) {
     numButtons[n].addEventListener("click", () => {
-      if (errLock == true) {
+      if (currentString == "" || currentString == "0") {
         errLock = false;
-        currentString = numButtons[n].textContent;
-        numDisplay.textContent = currentString;
-        clearCheck();
-      } else if (currentString == "") {
-        currentString = numButtons[n].textContent;
-        numDisplay.textContent = currentString;
-        clearCheck();
-      } else if (currentString == "" || currentString == "0") {
         currentString = numButtons[n].textContent;
         numDisplay.textContent = currentString;
         clearCheck();
