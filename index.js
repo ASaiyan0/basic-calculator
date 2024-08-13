@@ -120,8 +120,10 @@ window.addEventListener("load", () => {
       currentOp = "";
       currentString = "";
       clearCheck();
-    } else if (currentString != "" || currentOp != "" || firstNum == "") {
-      if (currentString[0] != "-") {
+    } else if ( currentString != "" ||
+      (currentOp != "" && currentString != "") ||
+      (firstNum == "" && currentString != "")
+    ){ if (currentString[0] != "-") {
         currentString = "-" + currentString;
         numDisplay.textContent = currentString;
         clearCheck();
