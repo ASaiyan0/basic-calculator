@@ -4,19 +4,18 @@ window.addEventListener("load", () => {
   const eqButton = document.querySelector(".eButton");
   const numDisplay = document.querySelector(".numDisplay");
   const opArray = ["add", "subtract", "multiply", "divide"];
-  let currentString = "";
   //This should always have STRING data. numDisplay, despite the name, should also always have STRING data.
+  let currentString = "";
+  //This should always have NUMBER data, OR a BLANK STRING.
   let firstNum = "";
-  //This should always have NUMBER data, OR a BLANK STRING (bad practice - figure out a better solution later).
+  //This is STRING.
   let currentOp = "";
   //This is STRING.
   let clearState = "ac";
-  //This is STRING.
-  let errLock = false;
   //This is BOOLEAN.
+  let errLock = false;
 
   function clearCheck() {
-    //There's gotta be a more elegant way of doing this, right?
     if (currentString != "") {
       clearState = "c";
       opButtons[5].textContent = clearState;
@@ -28,32 +27,35 @@ window.addEventListener("load", () => {
 
   function rounder(num) {
     //This function accepts NUMBER data and returns STRING data.
-    if (Math.abs(num) > 999999999 || Math.abs(num) < 0.00000001) {
+    if (
+      Math.abs(num) > 999999999 ||
+      (Math.abs(num) < 0.00000001 && Math.abs(num) != 0)
+    ) {
       return num.toExponential(5);
     } else {
+      //Following line reads as follows: "Subtract the number of digits to the left of the decimal point from 10"
       let n = 10 - num.toString().split(".")[0].match(/\d/g).length;
-      //line 16 reads as follows: "Subtract the number of digits to the left of the decimal point from 10"
       return parseFloat(num.toFixed(n)).toString();
     }
   }
 
   function equation() {
     if (currentOp == "add") {
-      currentString = firstNum + Number(currentString);
-      numDisplay.textContent = rounder(Number(currentString));
-      firstNum = Number(currentString);
+      let solution = firstNum + Number(currentString);
+      numDisplay.textContent = rounder(solution);
+      firstNum = solution;
       currentOp = "";
       currentString = "";
     } else if (currentOp == "subtract") {
-      currentString = firstNum - Number(currentString);
-      numDisplay.textContent = rounder(Number(currentString));
-      firstNum = Number(currentString);
+      let solution = firstNum - Number(currentString);
+      numDisplay.textContent = rounder(solution);
+      firstNum = solution;
       currentOp = "";
       currentString = "";
     } else if (currentOp == "multiply") {
-      currentString = firstNum * Number(currentString);
-      numDisplay.textContent = rounder(Number(currentString));
-      firstNum = Number(currentString);
+      let solution = firstNum * Number(currentString);
+      numDisplay.textContent = rounder(solution);
+      firstNum = solution;
       currentOp = "";
       currentString = "";
     } else if (currentOp == "divide") {
@@ -64,9 +66,9 @@ window.addEventListener("load", () => {
         currentString = "";
         errLock = true;
       } else {
-        currentString = firstNum / Number(currentString);
-        numDisplay.textContent = rounder(Number(currentString));
-        firstNum = Number(currentString);
+        let solution = firstNum / Number(currentString);
+        numDisplay.textContent = rounder(solution);
+        firstNum = solution;
         currentOp = "";
         currentString = "";
       }
@@ -77,16 +79,8 @@ window.addEventListener("load", () => {
 
   for (let n = 0; n <= 9; n++) {
     numButtons[n].addEventListener("click", () => {
-      if (errLock == true) {
+      if (currentString == "" || currentString == "0") {
         errLock = false;
-        currentString = numButtons[n].textContent;
-        numDisplay.textContent = currentString;
-        clearCheck();
-      } else if (currentString == "") {
-        currentString = numButtons[n].textContent;
-        numDisplay.textContent = currentString;
-        clearCheck();
-      } else if (currentString == "" || currentString == "0") {
         currentString = numButtons[n].textContent;
         numDisplay.textContent = currentString;
         clearCheck();
@@ -96,25 +90,19 @@ window.addEventListener("load", () => {
         numDisplay.textContent = currentString;
         clearCheck();
       } else {
-        currentString = currentString + numButtons[n].textContent;
-        clearCheck();
-        //Else, we will continue to add digits to the currentString, but NOT to the actual display (out of room)
+        return;
       }
     });
   }
 
   numButtons[10].addEventListener("click", () => {
-    if (errLock == true) {
+    if (errLock == true || currentString == "") {
       errLock = false;
       currentString = "0" + numButtons[10].textContent;
       numDisplay.textContent = currentString;
       clearCheck();
     } else if (currentString.includes(".")) {
       return;
-    } else if (currentString == "") {
-      currentString = "0" + numButtons[10].textContent;
-      numDisplay.textContent = currentString;
-      clearCheck();
     } else {
       currentString = currentString + numButtons[10].textContent;
       numDisplay.textContent = currentString;
@@ -126,16 +114,26 @@ window.addEventListener("load", () => {
     if (errLock == true) {
       return;
     } else if (currentString == "" && firstNum != "") {
-      currentString = (firstNum * -1).toString();
-      numDisplay.textContent = rounder(Number(currentString));
-      firstNum = Number(currentString);
+      let solution = firstNum * -1;
+      numDisplay.textContent = rounder(solution);
+      firstNum = solution;
       currentOp = "";
       currentString = "";
       clearCheck();
+    } else if (currentString != "" || currentOp != "" || firstNum == "") {
+      if (currentString[0] != "-") {
+        currentString = "-" + currentString;
+        numDisplay.textContent = currentString;
+        clearCheck();
+      } else {
+        currentString = currentString.substring(1);
+        numDisplay.textContent = currentString;
+        clearCheck();
+      }
     } else {
-      currentString = (Number(currentString) * -1).toString();
-      numDisplay.textContent = rounder(Number(currentString));
-      firstNum = Number(currentString);
+      let solution = Number(currentString) * -1;
+      numDisplay.textContent = rounder(solution);
+      firstNum = solution;
       currentOp = "";
       currentString = "";
       clearCheck();
@@ -167,7 +165,7 @@ window.addEventListener("load", () => {
       return;
     } else if (
       Number(currentString) < 0 ||
-      (currentString == "" && firstNum < 0)
+      (currentString == "" && firstNum != "" && firstNum < 0)
     ) {
       numDisplay.textContent = "Error";
       firstNum = "";
@@ -175,17 +173,25 @@ window.addEventListener("load", () => {
       currentString = "";
       errLock = true;
       clearCheck();
+    } else if (firstNum != "" && currentOp != "" && currentString != "") {
+      equation();
+      let solution = Math.sqrt(firstNum);
+      numDisplay.textContent = rounder(solution);
+      firstNum = solution;
+      currentOp = "";
+      currentString = "";
+      clearCheck();
     } else if (currentString == "" && firstNum != "") {
-      currentString = Math.sqrt(firstNum).toString();
-      numDisplay.textContent = rounder(Number(currentString));
-      firstNum = Number(currentString);
+      let solution = Math.sqrt(firstNum);
+      numDisplay.textContent = rounder(solution);
+      firstNum = solution;
       currentOp = "";
       currentString = "";
       clearCheck();
     } else {
-      currentString = Math.sqrt(Number(currentString)).toString();
-      numDisplay.textContent = rounder(Number(currentString));
-      firstNum = Number(currentString);
+      let solution = Math.sqrt(Number(currentString));
+      numDisplay.textContent = rounder(solution);
+      firstNum = solution;
       currentOp = "";
       currentString = "";
       clearCheck();
@@ -211,8 +217,15 @@ window.addEventListener("load", () => {
   eqButton.addEventListener("click", () => {
     if (firstNum == "" && currentString == "") {
       return;
-    } else if (firstNum == "" && currentString != "") {
-      numDisplay.textContent = currentString;
+    } else if (firstNum == "" && currentOp == "" && currentString != "") {
+      let solution = Number(currentString);
+      firstNum = solution;
+      numDisplay.textContent = rounder(solution);
+      currentString = "";
+      clearCheck();
+    } else if (firstNum == "" && currentOp != "" && currentString != "") {
+      firstNum = 0;
+      equation();
       clearCheck();
     } else if (firstNum != "" && currentString != "") {
       equation();
