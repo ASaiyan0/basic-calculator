@@ -27,10 +27,13 @@ window.addEventListener("load", () => {
 
   function rounder(num) {
     //This function accepts NUMBER data and returns STRING data.
-    if (Math.abs(num) > 999999999 || Math.abs(num) < 0.00000001) {
+    if (
+      Math.abs(num) > 999999999 ||
+      (Math.abs(num) < 0.00000001 && Math.abs(num) != 0)
+    ) {
       return num.toExponential(5);
     } else {
-    //Following line reads as follows: "Subtract the number of digits to the left of the decimal point from 10"
+      //Following line reads as follows: "Subtract the number of digits to the left of the decimal point from 10"
       let n = 10 - num.toString().split(".")[0].match(/\d/g).length;
       return parseFloat(num.toFixed(n)).toString();
     }
@@ -117,6 +120,16 @@ window.addEventListener("load", () => {
       currentOp = "";
       currentString = "";
       clearCheck();
+    } else if (currentString != "" || currentOp != "" || currentNum == "") {
+      if (currentString[0] != "-") {
+        currentString = "-" + currentString;
+        numDisplay.textContent = currentString;
+        clearCheck();
+      } else {
+        currentString = currentString.substring(1);
+        numDisplay.textContent = currentString;
+        clearCheck();
+      }
     } else {
       let solution = Number(currentString) * -1;
       numDisplay.textContent = rounder(solution);
@@ -168,7 +181,7 @@ window.addEventListener("load", () => {
       currentString = "";
       clearCheck();
     } else {
-      let solution = Math.sqrt(solution);
+      let solution = Math.sqrt(Number(currentString));
       numDisplay.textContent = rounder(solution);
       firstNum = solution;
       currentOp = "";
@@ -194,8 +207,11 @@ window.addEventListener("load", () => {
   });
 
   eqButton.addEventListener("click", () => {
-    if (firstNum == "" && currentString == "") {
+    if (firstNum == "" && currentString == "" && errLock == true) {
       return;
+    } else if (firstNum == "" && currentString == "" && errLock == false) {
+      firstNum = 0;
+      clearCheck();
     } else if (firstNum == "" && currentString != "") {
       let solution = Number(currentString);
       firstNum = solution;
