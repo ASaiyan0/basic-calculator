@@ -215,7 +215,7 @@ window.addEventListener("load", () => {
   });
 
   eqButton.addEventListener("click", () => {
-    if (firstNum == "" && currentString == "") {
+    if (firstNum == "" && currentString == "" && errLock == true) {
       return;
     } else if (firstNum == "" && currentOp == "" && currentString != "") {
       let solution = Number(currentString);
